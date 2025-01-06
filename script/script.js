@@ -35,3 +35,16 @@ function createCell() {
 
   return { addValue, getValue };
 }
+
+function createPlayer(name, mark) {
+  let active = false;
+
+  const getName = () => name;
+  const getMark = () => mark;
+  const isActive = () => active;
+  const toggleStatus = function () {
+    active = !active;
+  };
+
+  return { getName, getMark, isActive, toggleStatus };
+}
