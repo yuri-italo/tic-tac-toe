@@ -72,7 +72,6 @@ const GameController = (function () {
     }
 
     if (!GameBoard.selectCell(player, row, column)) {
-      console.log(`Cell at row ${row}, column ${column} is already occupied.`);
       return false;
     }
 
@@ -112,15 +111,10 @@ const GameController = (function () {
 
   const playRound = (row, column) => {
     const activePlayer = getActivePlayer();
-    console.log(
-      `Placing ${activePlayer.getName()}'s mark at row ${row}, column ${column}...`
-    );
 
     if (validateMove(activePlayer, row, column)) {
       if (hasWinner()) {
-        console.log(`${activePlayer.getName()} Wins!`);
       } else if (isDraw()) {
-        console.log("It's a Draw!");
       } else {
       }
     }
