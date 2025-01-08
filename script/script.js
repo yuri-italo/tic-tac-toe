@@ -1,4 +1,4 @@
-function createGameBoard() {
+const GameBoard = (function () {
   const board = Array.from({ length: 3 }, () =>
     Array.from({ length: 3 }, () => createCell())
   );
@@ -26,7 +26,7 @@ function createGameBoard() {
   };
 
   return { getBoard, selectCell, printBoard };
-}
+})();
 
 function createCell() {
   let value = null;
@@ -53,11 +53,10 @@ function createPlayer(name, mark) {
   return { getName, getMark, isActive, toggleStatus };
 }
 
-function createGameController(
+const GameController = (function (
   playerOneName = "Player 1",
   playerTwoName = "Player 2"
 ) {
-  const board = createGameBoard();
   const players = [
     createPlayer(playerOneName, "X"),
     createPlayer(playerTwoName, "O"),
@@ -74,7 +73,7 @@ function createGameController(
   };
 
   const printNewRound = () => {
-    board.printBoard();
+    GameBoard.printBoard();
     console.log(`${getActivePlayer().getName()}'s turn.`);
   };
 
@@ -87,7 +86,7 @@ function createGameController(
       throw new Error(`Cell at row ${row}, column ${column} does not exist.`);
     }
 
-    if (!board.selectCell(player, row, column)) {
+    if (!GameBoard.selectCell(player, row, column)) {
       console.log(`Cell at row ${row}, column ${column} is already occupied.`);
       return false;
     }
@@ -97,9 +96,9 @@ function createGameController(
   };
 
   const hasWinner = () => {
-    const boardValues = board
-      .getBoard()
-      .map((row) => row.map((cell) => cell.getValue()?.getMark()));
+    const boardValues = GameBoard.getBoard().map((row) =>
+      row.map((cell) => cell.getValue()?.getMark())
+    );
     const checkLine = (line) => line.every((mark) => mark && mark === line[0]);
 
     for (let i = 0; i < 3; i++) {
@@ -118,7 +117,7 @@ function createGameController(
   };
 
   const isDraw = () => {
-    const boardValues = board.getBoard();
+    const boardValues = GameBoard.getBoard();
     return (
       boardValues.every((row) =>
         row.every((cell) => cell.getValue() !== null)
@@ -146,4 +145,4 @@ function createGameController(
   printNewRound();
 
   return { playRound, getActivePlayer };
-}
+})();
