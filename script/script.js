@@ -18,14 +18,7 @@ const GameBoard = (function () {
     return false;
   };
 
-  const printBoard = () => {
-    const boardValues = board.map((row) =>
-      row.map((cell) => (cell.getValue() ? cell.getValue().getMark() : null))
-    );
-    console.log(boardValues);
-  };
-
-  return { getBoard, selectCell, printBoard };
+  return { getBoard, selectCell };
 })();
 
 function createCell() {
@@ -53,10 +46,7 @@ function createPlayer(name, mark) {
   return { getName, getMark, isActive, toggleStatus };
 }
 
-const GameController = (function (
-  playerOneName = "Player 1",
-  playerTwoName = "Player 2"
-) {
+const GameController = (function () {
   const players = [
     createPlayer(playerOneName, "X"),
     createPlayer(playerTwoName, "O"),
@@ -70,11 +60,6 @@ const GameController = (function (
 
   const getActivePlayer = () => {
     return players.find((player) => player.isActive());
-  };
-
-  const printNewRound = () => {
-    GameBoard.printBoard();
-    console.log(`${getActivePlayer().getName()}'s turn.`);
   };
 
   const validateMove = (player, row, column) => {
@@ -137,12 +122,9 @@ const GameController = (function (
       } else if (isDraw()) {
         console.log("It's a Draw!");
       } else {
-        printNewRound();
       }
     }
   };
 
-  printNewRound();
-
   return { playRound, getActivePlayer };
-})();
+})((playerOneName = "Player 1"), (playerTwoName = "Player 2"));
