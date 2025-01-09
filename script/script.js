@@ -128,23 +128,40 @@ const ScreenController = (function () {
   const btnStart = document.querySelector(".btn-start");
   const btnReset = document.querySelector(".btn-reset");
   btnStart.addEventListener("click", handleStartGame);
+  btnReset.addEventListener("click", handleResetGame);
 
   function handleStartGame(event) {
     event.preventDefault();
-    const cells = document.querySelectorAll(".board-cell");
-    const playerOneName = inputs[0].value || "Player One";
-    const playerTwoName = inputs[1].value || "Player Two";
+    const isDisabled = event.target.classList.contains("btn-disabled");
 
-    inputs[0].value = playerOneName;
-    inputs[1].value = playerTwoName;
+    if (!isDisabled) {
+      const playerOneName = inputs[0].value || "Player One";
+      const playerTwoName = inputs[1].value || "Player Two";
 
-    gameController = GameController(playerOneName, playerTwoName);
+      inputs[0].value = playerOneName;
+      inputs[1].value = playerTwoName;
 
-    disableInputs(inputs);
-    disableButton(btnStart);
-    enableButton(btnReset);
-    changeDisplay(`${gameController.getActivePlayer().getName()}'s turn!`);
-    cells.forEach((cell) => cell.classList.add("active-cell"));
+      gameController = GameController(playerOneName, playerTwoName);
+
+      disableInputs(inputs);
+      disableButton(btnStart);
+      enableButton(btnReset);
+      changeDisplay(`${gameController.getActivePlayer().getName()}'s turn!`);
+      enableCells();
+    }
+  }
+
+  function handleResetGame(event) {
+    event.preventDefault();
+    const isDisabled = event.target.classList.contains("btn-disabled");
+
+    if (!isDisabled) {
+      enableInputs(inputs);
+      disableButton(btnReset);
+      enableButton(btnStart);
+      changeDisplay("Enter the players' names to start.");
+      disableCells();
+    }
   }
 
   function changeDisplay(msg) {
@@ -155,11 +172,27 @@ const ScreenController = (function () {
     inputs.forEach((input) => input.setAttribute("disabled", ""));
   }
 
+  function enableInputs(inputs) {
+    inputs.forEach((input) => input.removeAttribute("disabled"));
+  }
+
   function disableButton(button) {
     button.classList.add("btn-disabled");
   }
 
   function enableButton(button) {
     button.classList.remove("btn-disabled");
+  }
+
+  function enableCells() {
+    document
+      .querySelectorAll(".board-cell")
+      .forEach((cell) => cell.classList.add("active-cell"));
+  }
+
+  function disableCells() {
+    document
+      .querySelectorAll(".board-cell")
+      .forEach((cell) => cell.classList.remove("active-cell"));
   }
 })();
