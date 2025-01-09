@@ -111,7 +111,6 @@ const GameController = (function () {
 
   const playRound = (row, column) => {
     const activePlayer = getActivePlayer();
-
     if (validateMove(activePlayer, row, column)) {
       if (hasWinner()) {
       } else if (isDraw()) {
@@ -120,5 +119,10 @@ const GameController = (function () {
     }
   };
 
-  return { playRound, getActivePlayer };
+  return { playRound, getActivePlayer, getBoard: GameBoard.getBoard };
 })((playerOneName = "Player 1"), (playerTwoName = "Player 2"));
+
+const ScreenController = (function () {
+  const gameController = GameController();
+  
+})();
