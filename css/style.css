@@ -116,6 +116,20 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
+.btn-disabled {
+  background-color: var(--color-300);
+  color: var(--color-600);
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.btn-disabled:hover,
+.btn-disabled:active {
+  transform: none;
+  box-shadow: none;
+}
+
 .main {
   display: flex;
   flex-direction: column;

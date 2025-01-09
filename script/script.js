@@ -46,7 +46,7 @@ function createPlayer(name, mark) {
   return { getName, getMark, isActive, toggleStatus };
 }
 
-const GameController = (function () {
+const GameController = function (playerOneName, playerTwoName) {
   const players = [
     createPlayer(playerOneName, "X"),
     createPlayer(playerTwoName, "O"),
@@ -120,9 +120,46 @@ const GameController = (function () {
   };
 
   return { playRound, getActivePlayer, getBoard: GameBoard.getBoard };
-})((playerOneName = "Player 1"), (playerTwoName = "Player 2"));
+};
 
 const ScreenController = (function () {
-  const gameController = GameController();
-  
+  let gameController;
+  const inputs = document.querySelectorAll("input");
+  const btnStart = document.querySelector(".btn-start");
+  const btnReset = document.querySelector(".btn-reset");
+  btnStart.addEventListener("click", handleStartGame);
+
+  function handleStartGame(event) {
+    event.preventDefault();
+    const cells = document.querySelectorAll(".board-cell");
+    const playerOneName = inputs[0].value || "Player One";
+    const playerTwoName = inputs[1].value || "Player Two";
+
+    inputs[0].value = playerOneName;
+    inputs[1].value = playerTwoName;
+
+    gameController = GameController(playerOneName, playerTwoName);
+
+    disableInputs(inputs);
+    disableButton(btnStart);
+    enableButton(btnReset);
+    changeDisplay(`${gameController.getActivePlayer().getName()}'s turn!`);
+    cells.forEach((cell) => cell.classList.add("active-cell"));
+  }
+
+  function changeDisplay(msg) {
+    document.querySelector(".display p").innerText = msg;
+  }
+
+  function disableInputs(inputs) {
+    inputs.forEach((input) => input.setAttribute("disabled", ""));
+  }
+
+  function disableButton(button) {
+    button.classList.add("btn-disabled");
+  }
+
+  function enableButton(button) {
+    button.classList.remove("btn-disabled");
+  }
 })();
