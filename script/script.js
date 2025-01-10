@@ -75,7 +75,6 @@ const GameController = function (playerOneName, playerTwoName) {
       return false;
     }
 
-    switchPlayerTurn();
     return true;
   };
 
@@ -111,12 +110,21 @@ const GameController = function (playerOneName, playerTwoName) {
 
   const playRound = (row, column) => {
     const activePlayer = getActivePlayer();
-    if (validateMove(activePlayer, row, column)) {
-      if (hasWinner()) {
-      } else if (isDraw()) {
-      } else {
-      }
+
+    if (!validateMove(activePlayer, row, column)) {
+      return "This spot is already taken.";
     }
+
+    if (hasWinner()) {
+      return `${activePlayer.getName()} has won the game!`;
+    }
+
+    if (isDraw()) {
+      return "It's a draw!";
+    }
+
+    switchPlayerTurn();
+    return `${getActivePlayer().getName()}'s turn!`;
   };
 
   return { playRound, getActivePlayer, getBoard: GameBoard.getBoard };
@@ -127,8 +135,13 @@ const ScreenController = (function () {
   const inputs = document.querySelectorAll("input");
   const btnStart = document.querySelector(".btn-start");
   const btnReset = document.querySelector(".btn-reset");
+  const cells = document.querySelectorAll(".board-cell");
+
+  cells.forEach((cell) => cell.addEventListener("click", handleSelectCell));
   btnStart.addEventListener("click", handleStartGame);
   btnReset.addEventListener("click", handleResetGame);
+
+  changeDisplay("Enter the players' names to start.");
 
   function handleStartGame(event) {
     event.preventDefault();
@@ -164,6 +177,27 @@ const ScreenController = (function () {
     }
   }
 
+  function handleSelectCell(event) {
+    if (gameController) {
+      const cell = event.target;
+
+      const msg = gameController.playRound(
+        cell.getAttribute("data-row"),
+        cell.getAttribute("data-column")
+      );
+
+      if (msg.includes("has won") || msg === "It's a draw!") {
+        cells.forEach((cell) =>
+          cell.removeEventListener("click", handleSelectCell)
+        );
+        disableCells();
+      }
+
+      populateGrid();
+      changeDisplay(msg);
+    }
+  }
+
   function changeDisplay(msg) {
     document.querySelector(".display p").innerText = msg;
   }
@@ -190,9 +224,36 @@ const ScreenController = (function () {
       .forEach((cell) => cell.classList.add("active-cell"));
   }
 
+  function deactivateCell(cell) {
+    cell.classList.remove("active-cell");
+  }
+
   function disableCells() {
     document
       .querySelectorAll(".board-cell")
       .forEach((cell) => cell.classList.remove("active-cell"));
+  }
+
+  function changeCellValue(cell, value) {
+    cell.innerText = value;
+  }
+
+  function populateGrid() {
+    const board = gameController.getBoard();
+
+    for (let i = 0; i < board.length; i++) {
+      for (let j = 0; j < board.length; j++) {
+        const player = board[i][j].getValue();
+
+        if (player) {
+          const emptyCell = document.querySelector(
+            `[data-row="${i}"][data-column="${j}"]`
+          );
+
+          changeCellValue(emptyCell, player.getMark());
+          deactivateCell(emptyCell);
+        }
+      }
+    }
   }
 })();

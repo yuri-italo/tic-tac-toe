@@ -156,7 +156,7 @@
   border: 2px solid var(--color-600);
   transition: transform 0.5s ease, background-color 0.5s ease,
     box-shadow 0.5s ease;
-  cursor: pointer;
+  cursor: not-allowed;
 }
 
 .active-cell:hover {
@@ -164,6 +164,7 @@
   transform: scale(1.1);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   border-color: var(--color-600);
+  cursor: pointer;
 }
 
 .active-cell:active {
