@@ -224,7 +224,7 @@ const ScreenController = (function () {
       .forEach((cell) => cell.classList.add("active-cell"));
   }
 
-  function deactivateCell(cell) {
+  function disableCell(cell) {
     cell.classList.remove("active-cell");
   }
 
@@ -251,7 +251,7 @@ const ScreenController = (function () {
           );
 
           changeCellValue(emptyCell, player.getMark());
-          deactivateCell(emptyCell);
+          disableCell(emptyCell);
         }
       }
     }
