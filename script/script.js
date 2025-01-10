@@ -137,7 +137,6 @@ const ScreenController = (function () {
   const btnReset = document.querySelector(".btn-reset");
   const cells = document.querySelectorAll(".board-cell");
 
-  cells.forEach((cell) => cell.addEventListener("click", handleSelectCell));
   btnStart.addEventListener("click", handleStartGame);
   btnReset.addEventListener("click", handleResetGame);
 
@@ -159,8 +158,8 @@ const ScreenController = (function () {
       disableInputs(inputs);
       disableButton(btnStart);
       enableButton(btnReset);
-      changeDisplay(`${gameController.getActivePlayer().getName()}'s turn!`);
       enableCells();
+      changeDisplay(`${gameController.getActivePlayer().getName()}'s turn!`);
     }
   }
 
@@ -170,10 +169,10 @@ const ScreenController = (function () {
 
     if (!isDisabled) {
       enableInputs(inputs);
-      disableButton(btnReset);
       enableButton(btnStart);
+      disableButton(btnReset);
+      clearGrid();
       changeDisplay("Enter the players' names to start.");
-      disableCells();
     }
   }
 
@@ -187,9 +186,6 @@ const ScreenController = (function () {
       );
 
       if (msg.includes("has won") || msg === "It's a draw!") {
-        cells.forEach((cell) =>
-          cell.removeEventListener("click", handleSelectCell)
-        );
         disableCells();
       }
 
@@ -218,10 +214,15 @@ const ScreenController = (function () {
     button.classList.remove("btn-disabled");
   }
 
+  function enableCell(cell) {
+    cell.classList.add("active-cell");
+  }
+
   function enableCells() {
-    document
-      .querySelectorAll(".board-cell")
-      .forEach((cell) => cell.classList.add("active-cell"));
+    cells.forEach((cell) => {
+      cell.addEventListener("click", handleSelectCell);
+      enableCell(cell);
+    });
   }
 
   function disableCell(cell) {
@@ -229,13 +230,30 @@ const ScreenController = (function () {
   }
 
   function disableCells() {
-    document
-      .querySelectorAll(".board-cell")
-      .forEach((cell) => cell.classList.remove("active-cell"));
+    cells.forEach((cell) => {
+      cell.removeEventListener("click", handleSelectCell);
+      disableCell(cell);
+    });
   }
 
   function changeCellValue(cell, value) {
     cell.innerText = value;
+  }
+
+  function clearGrid() {
+    const board = gameController.getBoard();
+
+    for (let i = 0; i < board.length; i++) {
+      for (let j = 0; j < board.length; j++) {
+        board[i][j].addValue(null);
+      }
+    }
+
+    cells.forEach((cell) => {
+      cell.removeEventListener("click", handleSelectCell);
+      cell.innerText = "";
+      disableCell(cell);
+    });
   }
 
   function populateGrid() {
@@ -246,12 +264,12 @@ const ScreenController = (function () {
         const player = board[i][j].getValue();
 
         if (player) {
-          const emptyCell = document.querySelector(
+          const cell = document.querySelector(
             `[data-row="${i}"][data-column="${j}"]`
           );
 
-          changeCellValue(emptyCell, player.getMark());
-          disableCell(emptyCell);
+          changeCellValue(cell, player.getMark());
+          disableCell(cell);
         }
       }
     }
